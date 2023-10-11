@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Student</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        
+        #container {
+            max-width: 400px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        h1 {
+            text-align: center;
+        }
+        
+        a {
+            text-decoration: none;
+            color: #007BFF;
+            display: block;
+            margin-top: 20px;
+            text-align: center;
+        }
+        
+        label {
+            font-weight: bold;
+        }
+        
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+        
+        button {
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        
+        button:hover {
+            background-color: #0056b3;
+        }
+        
+        #studentInfo {
+            margin-top: 20px;
+            text-align: center;
+        }
+        
+        #studentInfo h2 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        
+        #studentInfo p {
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="container">
+        <a href="index.html">Back to Home</a>
+        <h1>Search for a Student by Last Name</h1>
+
+        <label for="lastName">Enter Last Name:</label>
+        <input type="text" id="lastName" name="lastName">
+        <button type="button" onclick="searchStudent()">Search</button>
+
+        <div id="studentInfo"></div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script>
+        function searchStudent() {
+            var lastName = $("#lastName").val();
+            $.ajax({
+                url: "http://localhost:8080/students/by-lastname/" + lastName, // Update the URL to match your server endpoint
+                type: "get",
+                success: function(response) {
+                    var student = response;
+                    if (student.message && student.message === 'error - resource not found') {
+                        $("#studentInfo").html("<p>No student found with that last name.</p>");
+                    } else {
+                        var studentInfo = `
+                            <h2>${student.first_name} ${student.last_name}</h2>
+                            <p>ID: ${student.record_id}</p>
+                            <p>GPA: ${student.gpa}</p>
+                            <p>Enrolled: ${student.enrolled ? 'Yes' : 'No'}</p>
+                        `;
+                        $("#studentInfo").html(studentInfo);
+                    }
+                },
+                error: function(xhr) {
+                    console.log(xhr.responseText);
+                    $("#studentInfo").html('<p>Error: ' + xhr.responseText + '</p>');
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>

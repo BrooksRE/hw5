@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delete Student</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        
+        #container {
+            max-width: 400px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        h1 {
+            text-align: center;
+        }
+        
+        label {
+            font-weight: bold;
+        }
+        
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+        
+        button {
+            background-color: #dc3545;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        
+        button:hover {
+            background-color: #c82333;
+        }
+        
+        a {
+            text-decoration: none;
+            color: #007BFF;
+            display: block;
+            margin-top: 20px;
+            text-align: center;
+        }
+        
+        #mydiv {
+            margin-top: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="container">
+        <h1>Delete Student</h1>
+        <a href="index.html">Back to Home</a>
+        <form>
+            <label for="record_id">Student Record ID:</label>
+            <input type="text" id="record_id" name="record_id"><br><br>
+
+            <button type="button" onclick="deleteStudent()">Delete Student</button>
+        </form>
+        <div id="mydiv" name="mydiv"></div>
+    </div>
+    <script>
+        function deleteStudent() {
+            var record_id_val = $("#record_id").val();
+
+            $.ajax({
+                url: "http://localhost:8080/students/" + record_id_val, // Update the URL to match your server endpoint
+                type: "delete",
+                success: function(response) {
+                    console.log(response)
+                    $("#mydiv").text(response.message);
+                },
+                error: function(xhr) {
+                    console.log(xhr.responseText)
+                    $("#mydiv").text('Error: ' + xhr.responseText);
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>

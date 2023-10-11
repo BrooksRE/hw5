@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>List Students</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        
+        #container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        h1 {
+            text-align: center;
+        }
+        
+        a {
+            text-decoration: none;
+            color: #007BFF;
+            display: block;
+            margin-top: 20px;
+            text-align: center;
+        }
+        
+        #studentList {
+            margin-top: 20px;
+            list-style: none;
+            padding: 0;
+        }
+        
+        #studentList li {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        
+        #studentList h2 {
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+        
+        #studentList p {
+            margin: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="container">
+        <a href="index.html">Back to Home</a>
+        <h1>List of Students</h1>
+        <ul id="studentList"></ul>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script>
+        // Function to load and display a list of all students
+        function listStudents() {
+            $.ajax({
+                url: "http://localhost:8080/students", // Update the URL to match your server endpoint
+                type: "get",
+                success: function(response) {
+                    var students = response.students;
+                    if (students && students.length > 0) {
+                        var studentList = '';
+                        students.forEach(function(student) {
+                            studentList += `
+                                <li>
+                                    <h2>${student.first_name} ${student.last_name}</h2>
+                                    <p>ID: ${student.record_id}</p>
+                                    <p>GPA: ${student.gpa}</p>
+                                    <p>Enrolled: ${student.enrolled ? 'Yes' : 'No'}</p>
+                                </li>
+                            `;
+                        });
+                        $("#studentList").html(studentList);
+                    } else {
+                        $("#studentList").html("<p>No students found.</p>");
+                    }
+                },
+                error: function(xhr) {
+                    console.log(xhr.responseText);
+                    $("#studentList").html('<p>Error: ' + xhr.responseText + '</p>');
+                }
+            });
+        }
+
+        // Call the function to list all students when the page loads (you can change this as needed)
+        listStudents();
+    </script>
+</body>
+
+</html>

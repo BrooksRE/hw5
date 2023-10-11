@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Display Student</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        
+        #container {
+            max-width: 400px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        h1 {
+            text-align: center;
+        }
+        
+        a {
+            text-decoration: none;
+            color: #007BFF;
+            display: block;
+            margin-top: 20px;
+            text-align: center;
+        }
+        
+        #studentDetails {
+            margin-top: 20px;
+        }
+        
+        #studentDetails h2 {
+            font-size: 24px;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        
+        #studentDetails p {
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="container">
+        <a href="index.html">Back to Home</a>
+        <h1>Student Details</h1>
+        <div id="studentDetails"></div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script>
+        // Function to load and display student details by ID
+        function displayStudentById() {
+            var studentId = prompt("Enter the Student ID:");
+
+            if (studentId) {
+                $.ajax({
+                    url: "http://localhost:8080/students/" + studentId, // Update the URL to match your server endpoint
+                    type: "get",
+                    success: function(response) {
+                        var student = JSON.parse(response);
+                        if (student) {
+                            var studentDetails = `
+                                <h2>Name: ${student.first_name} ${student.last_name}</h2>
+                                <p>ID: ${student.record_id}</p>
+                                <p>GPA: ${student.gpa}</p>
+                                <p>Enrolled: ${student.enrolled ? 'Yes' : 'No'}</p>
+                            `;
+                            $("#studentDetails").html(studentDetails);
+                        } else {
+                            $("#studentDetails").html("<p>Student not found.</p>");
+                        }
+                    },
+                    error: function(xhr) {
+                        console.log(xhr.responseText);
+                        $("#studentDetails").html('<p>Error: ' + xhr.responseText + '</p>');
+                    }
+                });
+            }
+        }
+
+        // Call the function to display a student when the page loads (you can change this as needed)
+        displayStudentById();
+    </script>
+</body>
+
+</html>

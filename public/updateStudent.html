@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Student</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        
+        #container {
+            max-width: 400px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        h1 {
+            text-align: center;
+        }
+        
+        a {
+            text-decoration: none;
+            color: #007BFF;
+            display: block;
+            margin-top: 20px;
+            text-align: center;
+        }
+        
+        label {
+            font-weight: bold;
+        }
+        
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+        
+        button {
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        
+        button:hover {
+            background-color: #0056b3;
+        }
+        
+        #studentInfo {
+            margin-top: 20px;
+        }
+        
+        #updateMessage {
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        #updateMessage p {
+            font-weight: bold;
+            color: #007BFF;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="container">
+        <a href="index.html">Back to Home</a>
+        <h1>Update Student by ID</h1>
+
+        <label for="studentId">Enter Student ID:</label>
+        <input type="text" id="studentId" name="studentId">
+        <button type="button" onclick="loadStudent()">Load Student</button>
+
+        <div id="studentInfo"></div>
+
+        <h2>Edit Student Information:</h2>
+        <label for="firstName">First Name:</label>
+        <input type="text" id="firstName" name="firstName"><br><br>
+
+        <label for="lastName">Last Name:</label>
+        <input type="text" id="lastName" name="lastName"><br><br>
+
+        <label for="gpa">GPA:</label>
+        <input type="text" id="gpa" name="gpa"><br><br>
+
+        <label for="enrolled">Enrolled:</label>
+        <input type="text" id="enrolled" name="enrolled"><br><br>
+
+        <button type="button" onclick="updateStudent()">Update Student</button>
+
+        <div id="updateMessage"></div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script>
+        function loadStudent() {
+            var studentId = parseInt($("#studentId").val()); // Parse studentId as an integer
+            $.ajax({
+                url: "http://localhost:8080/students/" + studentId, // Update the URL to match your server endpoint
+                type: "get",
+                success: function(response) {
+                    var student = response;
+                    if (student.record_id) {
+                        $("#firstName").val(student.first_name);
+                        $("#lastName").val(student.last_name);
+                        $("#gpa").val(student.gpa);
+                        $("#enrolled").val(student.enrolled);
+                        $("#studentInfo").html("");
+                    } else {
+                        $("#studentInfo").html("<p>No student found with that ID.</p>");
+                    }
+                },
+                error: function(xhr) {
+                    console.log(xhr.responseText);
+                    $("#studentInfo").html('<p>Error: ' + xhr.responseText + '</p>');
+                }
+            });
+        }
+
+        function updateStudent() {
+            var studentId = parseInt($("#studentId").val()); // Parse studentId as an integer
+            var firstName = $("#firstName").val();
+            var lastName = $("#lastName").val();
+            var gpa = $("#gpa").val();
+            var enrolled = $("#enrolled").val();
+
+            $.ajax({
+                url: "http://localhost:8080/students/" + studentId, // Update the URL to match your server endpoint
+                type: "put",
+                data: {
+                    first_name: firstName,
+                    last_name: lastName,
+                    gpa: gpa,
+                    enrolled: enrolled
+                },
+                success: function(response) {
+                    $("#updateMessage").html("<p>Student updated successfully.</p>");
+                },
+                error: function(xhr) {
+                    console.log(xhr.responseText);
+                    $("#updateMessage").html('<p>Error: ' + xhr.responseText + '</p>');
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>
